@@ -77,3 +77,17 @@ Setup Needs
     mosh
 
 - zsh; set -o vi
+
+
+
+
+- Hacker clones sstt
+- Hacker edits ./pair file
+- Hacker does: s push
+- stackato.yml runs pre-running: bin/setup
+
+- if not repo > git clone repo into /app/fs
+- if DOTDOTDOT true > setup ...
+- apt-get stuffs
+- subshell/cd into repo
+- enter tmux
