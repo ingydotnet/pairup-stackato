@@ -55,6 +55,10 @@ Optionals
   with the host machine, perhaps add init prompts to do the `.ssh/id\_rsa.pub`
   exchange so that `scp` is quick both ways.
 
+- Automate process of:
+    - Creating Stackato user for pair guy
+    - email/github/irc/twitter? invites
+
 Setup
 -----
 
@@ -80,14 +84,23 @@ Setup Needs
 
 
 
-
+On local machine:
 - Hacker clones sstt
 - Hacker edits ./pair file
 - Hacker does: s push
+
 - stackato.yml runs pre-running: bin/setup
 
-- if not repo > git clone repo into /app/fs
-- if DOTDOTDOT true > setup ...
+# - if not repo > git clone repo into /app/fs
+# - if DOTDOTDOT true > setup ...
 - apt-get stuffs
+
 - subshell/cd into repo
 - enter tmux
+
+Things to Check
+---------------
+
+- Do other apps somehow crosstalk with /app/fs/\* ?
+- Why does the stackato group show up as 1034 in /app/fs/fs-ssttaacckkaattoo/
+
