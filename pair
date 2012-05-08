@@ -1,0 +1,14 @@
+# Set this to a VM unique value
+export PAIR_USER=ingydotnet
+
+# Git url of repo that you want to pair on
+export PAIR_WORKING_TREE=ssttaacckkaattoo
+export PAIR_REPO_URL=https://ingydotnet@github.com/ingydotnet/$PAIR_WORKING_TREE.git
+
+# Do you want ... support?
+export DOTDOTDOT_REPO=${PAIR_REPO_URL%/*}/....git
+
+# Git user info
+export GIT_AUTHOR_EMAIL=ingy@ingy.net
+export GIT_AUTHOR_NAME='Ingy döt Net'
+
