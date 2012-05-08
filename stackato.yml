@@ -1,0 +1,9 @@
+name: ssttaacckkaattoo
+
+framework:
+  type: node
+
+mem: 64M
+
+services:
+  filesystem: fs-ssttaacckkaattoo
