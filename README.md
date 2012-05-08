@@ -54,3 +54,26 @@ Optionals
   `gist`/`wgetpaste` CLI stuff, but also a way to get `xclip`/`xsel` talking
   with the host machine, perhaps add init prompts to do the `.ssh/id\_rsa.pub`
   exchange so that `scp` is quick both ways.
+
+Setup
+-----
+
+- Install Stackato - `curl get.stackato.com/microcloud | bash`
+- Add users, making them members of a group, such as `pair`
+- Add an app from the Store, but change the "Owner" from your user to the pair
+    group. We'll use "env" for starters.
+- Run these commands
+    stackato target the.server
+    stackato login
+    stackato group pair # or whatever you called it
+    stackato ssh env # or whichev
+
+Setup Needs
+-----------
+
+- Add:
+    wemux
+    screen-keys.conf
+    mosh
+
+- zsh; set -o vi
