@@ -6,4 +6,4 @@ framework:
 mem: 64M
 
 services:
-  filesystem: fs-ssttaacckkaattoo
+  fs-ssttaacckkaattoo: filesystem
