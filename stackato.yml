@@ -6,4 +6,7 @@ framework:
 mem: 64M
 
 services:
-  fs-ssttaacckkaattoo: filesystem
+  ssttaacckkaattoo: filesystem
+
+hooks:
+  pre-running: bin/setup
