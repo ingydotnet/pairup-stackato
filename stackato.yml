@@ -8,5 +8,5 @@ mem: 64M
 services:
   ssttaacckkaattoo: filesystem
 
-hooks:
-  pre-running: bin/setup
+# hooks:
+#   pre-running: bin/setup
