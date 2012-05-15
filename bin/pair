@@ -1,20 +1,32 @@
 #!/bin/bash -xe
 
-source /app/app/pairenv
-echo $PAIR_USER
-exit 1
+# Script constants
+root=/app/app
+PAIR_HOME=/app/fs/home
+PAIR_PROFILE=$root/profile
+PAIR_SETUP=$root/setup
+PAIR_UPDATE=$root/update
 
-export HOME=/app/fs/home
+# Check if already started
+if [[ -n $PAIR_STARTED ]]; then
+    echo "Already inside a pair session"
+    exit 1
+else
+    export PAIR_STARTED=1
+fi
+
+source $PAIR_PROFILE
+export HOME=$PAIR_HOME
 cd
 
-if [[ -n $IN_PAIR ]]; then
-    echo "Already inside bin/pair"
-    exit 1
+# Check is setup has happened
+if [[ `ls -a . | grep -c '.'` -le 2 ]]; then
+    # Run the user's setup
+    $PAIR_SETUP
+else
+    # Run the user's update
+    $PAIR_UPDATE
 fi
-export IN_PAIR=1
-
-[[ ! -d "..." ]] && setup_pair_env
 
 source .bashrc
 exec bash
-

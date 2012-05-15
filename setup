@@ -1,6 +1,9 @@
-#!/bin/bash -xe
+#!/bin/bash
+
+# set -xe
 
 DOTDOTDOT_REPO=https://ingydotnet@github.com/ingydotnet/....git
+export DOTDOTDOT_METHOD=symlink
 
 if [[ -n "$DOTDOTDOT_REPO" ]]; then
     if [[ ! -d ~/... ]]; then
