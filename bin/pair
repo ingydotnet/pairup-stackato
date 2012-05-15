@@ -1,14 +1,20 @@
-# Set this to a VM unique value
-export PAIR_USER=ingydotnet
+#!/bin/bash -xe
 
-# Git url of repo that you want to pair on
-export PAIR_WORKING_TREE=ssttaacckkaattoo
-export PAIR_REPO_URL=https://ingydotnet@github.com/ingydotnet/$PAIR_WORKING_TREE.git
+source /app/app/pairenv
+echo $PAIR_USER
+exit 1
 
-# Do you want ... support?
-export DOTDOTDOT_REPO=${PAIR_REPO_URL%/*}/....git
+export HOME=/app/fs/home
+cd
 
-# Git user info
-export GIT_AUTHOR_EMAIL=ingy@ingy.net
-export GIT_AUTHOR_NAME='Ingy döt Net'
+if [[ -n $IN_PAIR ]]; then
+    echo "Already inside bin/pair"
+    exit 1
+fi
+export IN_PAIR=1
+
+[[ ! -d "..." ]] && setup_pair_env
+
+source .bashrc
+exec bash
 

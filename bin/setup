@@ -1,21 +1,10 @@
 #!/bin/bash -xe
 
-source ./pair
-
-export HOME=/app/fs/ssttaacckkaattoo/$PAIR_USER
-
-[[ -d $HOME ]] || mkdir $HOME
-
-cd
+DOTDOTDOT_REPO=https://ingydotnet@github.com/ingydotnet/....git
 
 if [[ -n "$DOTDOTDOT_REPO" ]]; then
     if [[ ! -d ~/... ]]; then
         git clone $DOTDOTDOT_REPO
         ./.../...
     fi
-    # TODO(?) - update ... and re-run?
 fi
-
-[[ -d $PAIR_WORKING_TREE ]] || git clone $PAIR_REPO_URL $PAIR_WORKING_TREE
-
-cd $PAIR_WORKING_TREE
