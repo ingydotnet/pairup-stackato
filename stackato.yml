@@ -3,10 +3,7 @@ name: ssttaacckkaattoo
 framework:
   type: node
 
-mem: 64M
+mem: 256M
 
 services:
-  ssttaacckkaattoo: filesystem
-
-# hooks:
-#   pre-running: bin/setup
+  home: filesystem
