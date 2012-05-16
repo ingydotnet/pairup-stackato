@@ -7,14 +7,15 @@ root=/app/app
 
 # Export PAIR variables
 export PAIR_HOME=/app/fs/home
-export PAIR_PROFILE=$root/profile
-export PAIR_SETUP=$root/setup
-export PAIR_UPDATE=$root/update
-export PAIR_START=$root/start
 export PAIR_APP=$root
+export PAIR_CONF=$PAIR_APP/pair
+export PAIR_PROFILE=$PAIR_CONF/profile
+export PAIR_SETUP=$PAIR_CONF/setup
+export PAIR_UPDATE=$PAIR_CONF/update
+export PAIR_START=$PAIR_CONF/start
 
 # Set user variables
-source $PAIR_PROFILE
+[[ -f $PAIR_PROFILE ]] && source $PAIR_PROFILE
 
 function do_start() {
     # Check if already started
@@ -38,19 +39,27 @@ EOS
     cd
 
     # Prep is done
-#    set -x
     source $PAIR_START
 }
 
 function do_setup() {
-    # Switch HOME dirs
+    if [[ ! -d $PAIR_CONF ]]; then
+        cat <<EOS
+'$PAIR_CONF' does not exist.
+
+Try a command like this one:
+
+    git clone git@github.com:ingydotnet/example-pair.git pair
+
+EOS
+        exit 1
+    fi
     export HOME=$PAIR_HOME
     cd
     source $PAIR_SETUP
 }
 
 function do_update() {
-    # Switch HOME dirs
     export HOME=$PAIR_HOME
     cd
     source $PAIR_UPDATE
