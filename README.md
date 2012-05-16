@@ -3,6 +3,42 @@ stackato-pair-programming-station
 
 Pair Programming Station that runs as a Stackato App
 
+This stackato app will create a pairing programming environment that is clean
+and repeatable and quick-n-easy to setup.
+
+Setup
+-----
+
+Install Stackato. You'll need admin access to a Stackato (1.2 or higher) VM.
+You can install your own with this command:
+
+    curl get.stackato.com/microcloud | bash
+
+Using the stackato command line client, run these commands:
+
+    git clone git://github.com/ingydotnet/ssttaacckkaattoo.git
+    cd ssttaacckkaattoo
+    stackato target api.stackato.vm.domain
+    stackato register yourself@example.com
+    stackato register yourpair@example.com
+    stackato login yourself@example.com
+    stackato groups create pair
+    stackato groups add-user pair yourself@example.com
+    stackato groups add-user pair yourpair@example.com
+    stackato group pair
+    stackato push pair1 -n
+    stackato ssh pair1
+
+Now you are inside the pairing container. Run these commands
+
+    git clone your-pairing-repo-url pair
+    pair setup
+    pair start
+
+Your pair parter(s) can then ssh into the container and run:
+
+    pair start
+
 Essentials
 ----------
 
@@ -58,19 +94,6 @@ Optionals
 - Automate process of:
     - Creating Stackato user for pair guy
     - email/github/irc/twitter? invites
-
-Setup
------
-
-- Install Stackato - `curl get.stackato.com/microcloud | bash`
-- Add users, making them members of a group, such as `pair`
-- Add an app from the Store, but change the "Owner" from your user to the pair
-    group. We'll use "env" for starters.
-- Run these commands
-    stackato target the.server
-    stackato login
-    stackato group pair # or whatever you called it
-    stackato ssh env # or whichev
 
 Setup Needs
 -----------
