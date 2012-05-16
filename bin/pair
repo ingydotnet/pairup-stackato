@@ -1,32 +1,73 @@
-#!/bin/bash -xe
+#!/bin/bash
+
+set -e
 
 # Script constants
 root=/app/app
-PAIR_HOME=/app/fs/home
-PAIR_PROFILE=$root/profile
-PAIR_SETUP=$root/setup
-PAIR_UPDATE=$root/update
 
-# Check if already started
-if [[ -n $PAIR_STARTED ]]; then
-    echo "Already inside a pair session"
-    exit 1
-else
-    export PAIR_STARTED=1
-fi
+# Export PAIR variables
+export PAIR_HOME=/app/fs/home
+export PAIR_PROFILE=$root/profile
+export PAIR_SETUP=$root/setup
+export PAIR_UPDATE=$root/update
+export PAIR_START=$root/start
+export PAIR_APP=$root
 
+# Set user variables
 source $PAIR_PROFILE
-export HOME=$PAIR_HOME
-cd
 
-# Check is setup has happened
-if [[ `ls -a . | grep -c '.'` -le 2 ]]; then
-    # Run the user's setup
-    $PAIR_SETUP
-else
-    # Run the user's update
-    $PAIR_UPDATE
-fi
+function do_start() {
+    # Check if already started
+    if [[ -n "$PAIR_STARTED" ]]; then
+        echo "You are already inside a pair session."
+        exit 1
+    else
+        export PAIR_STARTED=1
+    fi
 
-source .bashrc
-exec bash
+    if [[ -z $(is_setup) ]]; then
+        cat <<EOS
+Pair environment not set up.
+Run 'pair setup' first.
+EOS
+        exit 1
+    fi
+
+    # Switch HOME dirs
+    export HOME=$PAIR_HOME
+    cd
+
+    # Prep is done
+#    set -x
+    source $PAIR_START
+}
+
+function do_setup() {
+    # Switch HOME dirs
+    export HOME=$PAIR_HOME
+    cd
+    source $PAIR_SETUP
+}
+
+function do_update() {
+    # Switch HOME dirs
+    export HOME=$PAIR_HOME
+    cd
+    source $PAIR_UPDATE
+}
+
+function do_delete() {
+    find $PAIR_HOME -mindepth 1 -delete
+}
+
+function is_setup() {
+    # Check is setup has happened
+    if [[ `ls -a $PAIR_HOME | grep -c '.'` -gt 2 ]]; then
+        echo 1
+    fi
+}
+
+#------------------------------------------------------------------------------
+
+[[ -n "$1" ]] && command=$1 || command="start"
+do_$command
