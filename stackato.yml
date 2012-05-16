@@ -13,9 +13,10 @@ processes:
 # Good to have lots of memory. Low memory seems to cause apt-get failures.
 mem: 256M
 
-# This shared fs will become your home dir when you run the 'pair' command.
+# This shared fs is useful for keeping stuff you don't want to lose, like your
+# code repositories.
 services:
-  home: filesystem
+  pair: filesystem
 
 # This allows the .git/ directory to get pushed. Good for hacking on 'pairup'
 # itself.

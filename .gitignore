@@ -1,6 +1,8 @@
 init
 reset
 ssh
+.vim/
 .viminfo
 manifest.yml
+conf/
 pair/

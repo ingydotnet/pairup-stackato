@@ -31,7 +31,7 @@ Using the stackato command line client, run these commands:
 
 Now you are inside the pairing container. Run these commands:
 
-    git clone your-pairing-repo-url pair
+    git clone your-pairing-repo-url conf
     pair setup
     pair start
 

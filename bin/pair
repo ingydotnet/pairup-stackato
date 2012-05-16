@@ -3,9 +3,9 @@
 set -e
 
 # Export PAIR variables
-export PAIR_HOME=/app/fs/home
+export PAIR_HOME=/app/app/pair
 export PAIR_APP=/app/app
-export PAIR_CONF=$PAIR_APP/pair
+export PAIR_CONF=$PAIR_APP/conf
 export PAIR_PROFILE=$PAIR_CONF/profile
 export PAIR_SETUP=$PAIR_CONF/setup
 export PAIR_UPDATE=$PAIR_CONF/update
@@ -64,6 +64,7 @@ function is_setup() {
 
 function change_home() {
     # Switch HOME dirs
+    [[ ! -d $PAIR_HOME ]] && mkdir $PAIR_HOME
     export HOME=$PAIR_HOME
     cd
 }
