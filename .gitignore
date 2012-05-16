@@ -1,4 +1,6 @@
 init
+reset
+ssh
 .viminfo
 manifest.yml
 pair/
