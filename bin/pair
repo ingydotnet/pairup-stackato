@@ -11,6 +11,21 @@ export PAIR_SETUP=$PAIR_CONF/setup
 export PAIR_UPDATE=$PAIR_CONF/update
 export PAIR_START=$PAIR_CONF/start
 
+function do_help() {
+    cat <<EOS
+Usage: pair [ start | setup | update | delete | help ]
+
+    start - Start the pairing environment
+    setup - Setup the pairing environment
+    update - Update the pairing environment
+    delete - Delete the pairing environment
+    help - Show this message
+
+With no arguments, defaults to 'start'.
+
+EOS
+}
+
 function do_start() {
     assert_not_started
     assert_init
@@ -101,4 +116,5 @@ EOS
 #------------------------------------------------------------------------------
 
 [[ -n "$1" ]] && command=$1 || command="start"
+[[ $command == '-?' ]] || [[ $command == '-h' ]] || [[ $command == '--help' ]] && command="help"
 do_$command
