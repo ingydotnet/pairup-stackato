@@ -4,7 +4,7 @@ framework:
   type: generic
 
 processes:
-  web: while true; do nc -l 3000 -q 1 < index.html; done
+  web: while true; do nc -l 3000 -q 1 < README.md; done
 
 mem: 256M
 
