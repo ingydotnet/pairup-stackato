@@ -6,8 +6,8 @@ PairUp! is a Pair Programming Station that runs as a Stackato Application.
 This stackato app will create a pairing programming environment that is clean
 and repeatable and quick-n-easy to setup.
 
-Setup
------
+Initial Setup
+-------------
 
 You'll need admin access to a Stackato (1.2 or higher) VM.  You can install
 your own with this command:
@@ -33,41 +33,32 @@ Now you are inside the pairing container. Run these commands:
 
     git clone your-pairing-repo-url conf
     pair setup
+
+At this point, yourpair will need to download the [Stackato client](http://www.activestate.com/stackato/download_client), then run:
+    
+    stackato target api.your.stackato.vm.domain
+    stackato login yourpair@example.com
+    stackato group pair
+
+Running
+-------
+
+After the above prep, both you and your pair will do the following:
+
+    stackato ssh pairup
+
+Then from within the VM:
+
     pair start
 
-Your pair parter(s) can then ssh into the container and run:
-
-    pair start
-
-
+Whoever is the first to do it creates a `tmux` session (which has screen-like
+bindings, e.g., it uses Ctrl+a instead of tmux's default Ctrl+b), and the
+second one will do a `tmux attach`.
 
 ... need more doc here. stuff below is older ...
 
-
-
-Essentials
-----------
-
-- Terminal multiplexing - screen is familiar, but tmux is better (especially
-  with [wemux](https://github.com/zolrath/wemux). Perhaps the best thing is to
-  do screen-like keybindings with tmux?
-
-- Hooks into [...](https://github.com/ingydotnet/...) or other personal-config
-  repos. Probably prompt the user for a repo, then automatically "make
-  install" it.
-
-- Languages/libs - This one's tough. The union of what everyone would want
-  would be a ridiculous download, and also hard to maintain. Probably should
-  delegate to another repo like the config one. Wouldn't be too hard to cook
-  up some decent defaults, like "Rails dev" or "Android dev".
-
-- Super-optimization for preferred setup - That is, if you have a github
-  account with repos conforming to the pattern of "username/..." and
-  "username/stackapair", both are pulled in and executed, only requiring that
-  the user supply their github user/pw.
-
-Optionals
----------
+Future Ideas
+------------
 
 - Keep decent logs. E.g., prompt the users at the end of the session for a
   string describing what went on, then maybe snapshot the shell history plus
@@ -102,18 +93,9 @@ Optionals
     - Creating Stackato user for pair guy
     - email/github/irc/twitter? invites
 
-Setup Needs
------------
-
-- Add:
-    wemux
-    screen-keys.conf
-    mosh
-
-- zsh; set -o vi
+- Add mosh (MObile SHell)
 
 Things to Check
 ---------------
 
 - Why does the stackato group show up as 1034 in /app/fs/home/
-
