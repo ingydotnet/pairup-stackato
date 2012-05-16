@@ -1,7 +1,7 @@
-stackato-pair-programming-station
-=================================
+PairUp!
+=======
 
-Pair Programming Station that runs as a Stackato App
+PairUp! is a Pair Programming Station that runs as a Stackato Application.
 
 This stackato app will create a pairing programming environment that is clean
 and repeatable and quick-n-easy to setup.
@@ -9,16 +9,16 @@ and repeatable and quick-n-easy to setup.
 Setup
 -----
 
-Install Stackato. You'll need admin access to a Stackato (1.2 or higher) VM.
-You can install your own with this command:
+You'll need admin access to a Stackato (1.2 or higher) VM.  You can install
+your own with this command:
 
     curl get.stackato.com/microcloud | bash
 
 Using the stackato command line client, run these commands:
 
-    git clone git://github.com/ingydotnet/ssttaacckkaattoo.git
-    cd ssttaacckkaattoo
-    stackato target api.stackato.vm.domain
+    git clone git://github.com/ingydotnet/pairup.git
+    cd pairup
+    stackato target api.your.stackato.vm.domain
     stackato register yourself@example.com
     stackato register yourpair@example.com
     stackato login yourself@example.com
@@ -26,10 +26,10 @@ Using the stackato command line client, run these commands:
     stackato groups add-user pair yourself@example.com
     stackato groups add-user pair yourpair@example.com
     stackato group pair
-    stackato push pair1 -n
-    stackato ssh pair1
+    stackato push -n
+    stackato ssh pairup
 
-Now you are inside the pairing container. Run these commands
+Now you are inside the pairing container. Run these commands:
 
     git clone your-pairing-repo-url pair
     pair setup
@@ -39,6 +39,12 @@ Your pair parter(s) can then ssh into the container and run:
 
     pair start
 
+
+
+... need more doc here. stuff below is older ...
+
+
+
 Essentials
 ----------
 
@@ -47,7 +53,8 @@ Essentials
   do screen-like keybindings with tmux?
 
 - Hooks into [...](https://github.com/ingydotnet/...) or other personal-config
-  repos. Probably prompt the user for a repo, then automatically "make install"   it.
+  repos. Probably prompt the user for a repo, then automatically "make
+  install" it.
 
 - Languages/libs - This one's tough. The union of what everyone would want
   would be a ridiculous download, and also hard to maintain. Probably should
@@ -105,25 +112,8 @@ Setup Needs
 
 - zsh; set -o vi
 
-
-
-On local machine:
-- Hacker clones sstt
-- Hacker edits ./pair file
-- Hacker does: s push
-
-- stackato.yml runs pre-running: bin/setup
-
-# - if not repo > git clone repo into /app/fs
-# - if DOTDOTDOT true > setup ...
-- apt-get stuffs
-
-- subshell/cd into repo
-- enter tmux
-
 Things to Check
 ---------------
 
-- Do other apps somehow crosstalk with /app/fs/\* ?
-- Why does the stackato group show up as 1034 in /app/fs/fs-ssttaacckkaattoo/
+- Why does the stackato group show up as 1034 in /app/fs/home/
 
