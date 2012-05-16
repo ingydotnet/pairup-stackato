@@ -3,6 +3,7 @@ reset
 ssh
 .vim/
 .viminfo
+.bash_history
 manifest.yml
 conf/
 pair/
