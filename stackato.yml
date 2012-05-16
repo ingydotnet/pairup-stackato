@@ -2,7 +2,6 @@ name: ssttaacckkaattoo
 
 framework:
   type: generic
-#   type: node
 
 processes:
   web: while true; do nc -l 3000 -q 1 < index.html; done
@@ -11,8 +10,5 @@ mem: 256M
 
 services:
   home: filesystem
-
-# env:
-#   PAIR_REPO: git@github.com:ingydotnet/rking-pair.git
 
 ignores: []

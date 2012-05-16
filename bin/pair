@@ -2,66 +2,35 @@
 
 set -e
 
-# Script constants
-root=/app/app
-
 # Export PAIR variables
 export PAIR_HOME=/app/fs/home
-export PAIR_APP=$root
+export PAIR_APP=/app/app
 export PAIR_CONF=$PAIR_APP/pair
 export PAIR_PROFILE=$PAIR_CONF/profile
 export PAIR_SETUP=$PAIR_CONF/setup
 export PAIR_UPDATE=$PAIR_CONF/update
 export PAIR_START=$PAIR_CONF/start
 
-# Set user variables
-[[ -f $PAIR_PROFILE ]] && source $PAIR_PROFILE
-
 function do_start() {
-    # Check if already started
-    if [[ -n "$PAIR_STARTED" ]]; then
-        echo "You are already inside a pair session."
-        exit 1
-    else
-        export PAIR_STARTED=1
-    fi
-
-    if [[ -z $(is_setup) ]]; then
-        cat <<EOS
-Pair environment not set up.
-Run 'pair setup' first.
-EOS
-        exit 1
-    fi
-
-    # Switch HOME dirs
-    export HOME=$PAIR_HOME
-    cd
+    assert_not_started
+    assert_init
+    assert_setup
+    change_home
 
     # Prep is done
     source $PAIR_START
 }
 
 function do_setup() {
-    if [[ ! -d $PAIR_CONF ]]; then
-        cat <<EOS
-'$PAIR_CONF' does not exist.
-
-Try a command like this one:
-
-    git clone git@github.com:ingydotnet/example-pair.git pair
-
-EOS
-        exit 1
-    fi
-    export HOME=$PAIR_HOME
-    cd
+    assert_init
+    change_home
     source $PAIR_SETUP
 }
 
 function do_update() {
-    export HOME=$PAIR_HOME
-    cd
+    assert_init
+    assert_setup
+    change_home
     source $PAIR_UPDATE
 }
 
@@ -73,6 +42,47 @@ function is_setup() {
     # Check is setup has happened
     if [[ `ls -a $PAIR_HOME | grep -c '.'` -gt 2 ]]; then
         echo 1
+    fi
+}
+
+#------------------------------------------------------------------------------
+function change_home() {
+    # Switch HOME dirs
+    export HOME=$PAIR_HOME
+    cd
+}
+
+function assert_not_started() {
+    # Check if already started
+    if [[ -n "$PAIR_STARTED" ]]; then
+        echo "You are already inside a pair session."
+        exit 1
+    fi
+    export PAIR_STARTED=1
+}
+
+function assert_init() {
+    if [[ ! -d $PAIR_CONF ]]; then
+        cat <<EOS
+'$PAIR_CONF' does not exist.
+
+Try a command like this one:
+
+    git clone git@github.com:ingydotnet/example-pair.git pair
+
+EOS
+        exit 1
+    fi
+    [[ -f $PAIR_PROFILE ]] && source $PAIR_PROFILE
+}
+
+function assert_setup {
+    if [[ -z $(is_setup) ]]; then
+        cat <<EOS
+Pair environment not set up.
+Run 'pair setup' first.
+EOS
+        exit 1
     fi
 }
 
