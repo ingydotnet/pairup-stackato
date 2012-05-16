@@ -23,6 +23,7 @@ function do_start() {
 
 function do_setup() {
     assert_init
+    assert_not_setup
     change_home
     source $PAIR_SETUP
 }
@@ -38,6 +39,7 @@ function do_delete() {
     find $PAIR_HOME -mindepth 1 -delete
 }
 
+#------------------------------------------------------------------------------
 function is_setup() {
     # Check is setup has happened
     if [[ `ls -a $PAIR_HOME | grep -c '.'` -gt 2 ]]; then
@@ -45,13 +47,13 @@ function is_setup() {
     fi
 }
 
-#------------------------------------------------------------------------------
 function change_home() {
     # Switch HOME dirs
     export HOME=$PAIR_HOME
     cd
 }
 
+#------------------------------------------------------------------------------
 function assert_not_started() {
     # Check if already started
     if [[ -n "$PAIR_STARTED" ]]; then
@@ -81,6 +83,16 @@ function assert_setup {
         cat <<EOS
 Pair environment not set up.
 Run 'pair setup' first.
+EOS
+        exit 1
+    fi
+}
+
+function assert_not_setup {
+    if [[ -n $(is_setup) ]]; then
+        cat <<EOS
+Pair environment already set up.
+Run 'pair delete' if you want to start over.
 EOS
         exit 1
     fi
