@@ -51,6 +51,7 @@ function do_update() {
 }
 
 function do_delete() {
+    find $STACKATO_FILESYSTEM_PAIR -mindepth 1 -delete
     find $PAIR_HOME -mindepth 1 -delete
 }
 
