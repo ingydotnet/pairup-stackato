@@ -87,7 +87,7 @@ function assert_init() {
 
 Try a command like this one:
 
-    git clone git@github.com:ingydotnet/example-pair.git pair
+    git clone git@github.com:ouicode/rkingy-pairup.git pair
 
 EOS
         exit 1
@@ -109,7 +109,6 @@ function assert_not_setup {
     if [[ -n $(is_setup) ]]; then
         cat <<EOS
 Pair environment already set up.
-Run 'pair delete' if you want to start over.
 EOS
         exit 1
     fi

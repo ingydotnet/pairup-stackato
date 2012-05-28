@@ -1,6 +1,7 @@
 init
 reset
 ssh
+
 .vim/
 .viminfo
 .bash_history
