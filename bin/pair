@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 # Export PAIR variables
 export PAIR_HOME=/app/app/pair
@@ -47,7 +47,7 @@ function do_update() {
     assert_init
     assert_setup
     change_home
-    source $PAIR_UPDATE
+    time source $PAIR_UPDATE
 }
 
 function do_delete() {
