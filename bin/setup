@@ -1,0 +1,13 @@
+#!/bin/bash -e
+# This script can be used to push a PairUp! app into a new named container and
+# then ssh into it in one go.
+
+if [[ -z "$1" ]]; then
+    echo "Stackato app name is required"
+    exit 1
+fi
+
+name=$1
+
+stackato push $name -n
+./ssh $name

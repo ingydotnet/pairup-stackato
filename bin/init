@@ -1,0 +1,9 @@
+#!/bin/bash -xe
+# This script is just a helper to setup a new container pair environment.
+# Run it the first time you are in a new PairUp! container.
+
+repo=${PAIRUP_REPO:-git@github.com:ouicode/rkingy-pairup.git}
+
+git clone $repo conf
+pair setup
+pair start

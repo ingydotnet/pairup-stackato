@@ -1,7 +1,3 @@
-init
-setup
-ssh
-
 .vim/
 .viminfo
 .bash_history
