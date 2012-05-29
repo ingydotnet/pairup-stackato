@@ -6,7 +6,6 @@ set -ex
 export PAIR_HOME=/app/app/pair
 export PAIR_APP=/app/app
 export PAIR_CONF=$PAIR_APP/conf
-export PAIR_PROFILE=$PAIR_CONF/profile
 export PAIR_SETUP=$PAIR_CONF/setup
 export PAIR_UPDATE=$PAIR_CONF/update
 export PAIR_START=$PAIR_CONF/start
@@ -92,7 +91,6 @@ Try a command like this one:
 EOS
         exit 1
     fi
-    [[ -f $PAIR_PROFILE ]] && source $PAIR_PROFILE
 }
 
 function assert_setup {
