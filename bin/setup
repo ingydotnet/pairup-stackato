@@ -10,4 +10,4 @@ fi
 name=$1
 
 stackato push $name -n
-$(dirname $0)/ssh $name
+$(dirname $0)/connect $name
