@@ -16,7 +16,7 @@ mem: 256M
 # This shared fs is useful for keeping stuff you don't want to lose, like your
 # code repositories.
 services:
-  pair: filesystem
+  pairup: filesystem
 
 # This allows the .git/ directory to get pushed. Good for hacking on 'pairup'
 # itself.

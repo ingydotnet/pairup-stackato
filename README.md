@@ -61,11 +61,9 @@ After the above prep, both you and your pair will do the following:
 
 Then from within the VM:
 
-    pair start
+    pairup start
 
 Whoever is the first to do it creates a `tmux` session, and the second one
 will do a `tmux attach`.
 
 Happy hacking.
-
-... need more doc here. stuff below is older ...
