@@ -2,22 +2,21 @@
 
 set -ex
 
-# Export PAIR variables
-export PAIR_HOME=/app/app/pair
-export PAIR_APP=/app/app
-export PAIR_CONF=$PAIR_APP/conf
-export PAIR_SETUP=$PAIR_CONF/setup
-export PAIR_UPDATE=$PAIR_CONF/update
-export PAIR_START=$PAIR_CONF/start
+# Export PAIRUP variables
+export PAIRUP_HOME=/home/pairup
+export PAIRUP_APP=/app/app
+export PAIRUP_CONF=$PAIRUP_APP/conf
+export PAIRUP_SETUP=$PAIRUP_CONF/setup
+export PAIRUP_UPDATE=$PAIRUP_CONF/update
+export PAIRUP_START=$PAIRUP_CONF/start
 
 function do_help() {
     cat <<EOS
-Usage: pair [ start | setup | update | delete | help ]
+Usage: pairup [ start | setup | update | help ]
 
-    start - Start the pairing environment
-    setup - Setup the pairing environment
-    update - Update the pairing environment
-    delete - Delete the pairing environment
+    start - Start the PairUp! environment
+    setup - Setup the PairUp! environment
+    update - Update the PairUp! environment
     help - Show this message
 
 With no arguments, defaults to 'start'.
@@ -39,54 +38,49 @@ function do_setup() {
     assert_init
     assert_not_setup
     change_home
-    source $PAIR_SETUP
+    source $PAIRUP_SETUP
 }
 
 function do_update() {
     assert_init
     assert_setup
     change_home
-    time source $PAIR_UPDATE
-}
-
-function do_delete() {
-    find $STACKATO_FILESYSTEM_PAIR -mindepth 1 -delete
-    find $PAIR_HOME -mindepth 1 -delete
+    time source $PAIRUP_UPDATE
 }
 
 #------------------------------------------------------------------------------
 function is_setup() {
     # Check is setup has happened
-    if [[ `ls -a $PAIR_HOME | grep -c '.'` -gt 2 ]]; then
+    if [[ `ls -a $PAIRUP_HOME | grep -c '.'` -gt 2 ]]; then
         echo 1
     fi
 }
 
 function change_home() {
     # Switch HOME dirs
-    [[ ! -d $PAIR_HOME ]] && mkdir $PAIR_HOME
-    export HOME=$PAIR_HOME
+    [[ ! -d $PAIRUP_HOME ]] && mkdir $PAIRUP_HOME
+    export HOME=$PAIRUP_HOME
     cd
 }
 
 #------------------------------------------------------------------------------
 function assert_not_started() {
     # Check if already started
-    if [[ -n "$PAIR_STARTED" ]]; then
-        echo "You are already inside a pair session."
+    if [[ -n "$PAIRUP_STARTED" ]]; then
+        echo "You are already inside a PairUp! session."
         exit 1
     fi
-    export PAIR_STARTED=1
+    export PAIRUP_STARTED=1
 }
 
 function assert_init() {
-    if [[ ! -d $PAIR_CONF ]]; then
+    if [[ ! -d $PAIRUP_CONF ]]; then
         cat <<EOS
-'$PAIR_CONF' does not exist.
+'$PAIRUP_CONF' does not exist.
 
 Try a command like this one:
 
-    git clone git@github.com:ouicode/rkingy-pairup.git pair
+    git clone git@github.com:ouicode/rkingy-pairup.git conf
 
 EOS
         exit 1
@@ -96,8 +90,8 @@ EOS
 function assert_setup {
     if [[ -z $(is_setup) ]]; then
         cat <<EOS
-Pair environment not set up.
-Run 'pair setup' first.
+PairUp! environment not set up.
+Run 'pairup setup' first.
 EOS
         exit 1
     fi
@@ -106,7 +100,7 @@ EOS
 function assert_not_setup {
     if [[ -n $(is_setup) ]]; then
         cat <<EOS
-Pair environment already set up.
+PairUp! environment already set up.
 EOS
         exit 1
     fi
