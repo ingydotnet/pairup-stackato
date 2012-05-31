@@ -4,6 +4,8 @@ set -ex
 
 # Export PAIRUP variables
 export PAIRUP_HOME=/home/pairup
+export PAIRUP_USER=stackato
+export PAIRUP_GROUP=stackato
 export PAIRUP_APP=/app/app
 export PAIRUP_CONF=$PAIRUP_APP/conf
 export PAIRUP_SETUP=$PAIRUP_CONF/setup
@@ -31,7 +33,7 @@ function do_start() {
     change_home
 
     # Prep is done
-    source $PAIR_START
+    source $PAIRUP_START
 }
 
 function do_setup() {
@@ -58,7 +60,9 @@ function is_setup() {
 
 function change_home() {
     # Switch HOME dirs
-    [[ ! -d $PAIRUP_HOME ]] && mkdir $PAIRUP_HOME
+    [[ ! -d $PAIRUP_HOME ]] &&
+        sudo mkdir $PAIRUP_HOME &&
+	sudo chown $PAIRUP_USER.$PAIRUP_GROUP $PAIRUP_HOME
     export HOME=$PAIRUP_HOME
     cd
 }
