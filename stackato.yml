@@ -8,7 +8,7 @@ framework:
 # Needed by stackato 1.2. Container needs to respond to web request to appear
 # alive. We serve the README file, since it is already available.
 processes:
-  web: while true; do nc -l 3000 -q 1 < README.md; done
+  web: while true; do nc -l $PORT -q 1 < README.md; done
 
 # Good to have lots of memory. Low memory seems to cause apt-get failures.
 mem: 256M
