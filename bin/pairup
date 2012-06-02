@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# set -ex
-set -e
+set -ex
 
 # Set PAIRUP variables
 PAIRUP_HOME=/home/pairup
