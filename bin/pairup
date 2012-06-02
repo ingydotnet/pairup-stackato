@@ -86,24 +86,28 @@ function do_init() {
         $dir/configure
         ~/.../bin/... install
     fi
-    if [[ -n $PAIRUP_INIT_POST_COMMANDS ]]; then
-        $PAIRUP_INIT_POST_COMMANDS
+    if [[ -n "$PAIRUP_INIT_POST_COMMANDS" ]]; then
+        eval "$PAIRUP_INIT_POST_COMMANDS"
     fi
 }
 
 function do_start() {
     assert_not_started
     assert_init
+    assert_conf
     change_home
-
-    # Prep is done
-    source $PAIRUP_START
+    if [[ -n "$PAIRUP_START_COMMANDS" ]]; then
+        eval "$PAIRUP_START_COMMANDS"
+    fi
 }
 
 function do_update() {
     assert_init
     change_home
-    time source $PAIRUP_UPDATE
+    assert_conf
+    if [[ -n "$PAIRUP_UPDATE_COMMANDS" ]]; then
+        time eval "$PAIRUP_UPDATE_COMMANDS"
+    fi
 }
 
 #------------------------------------------------------------------------------
@@ -142,15 +146,6 @@ function assert_not_started() {
 }
 
 function assert_init() {
-    if [[ ! -d $PAIRUP_CONF ]]; then
-        cat <<EOS
-'$PAIRUP_CONF' does not exist. Run this command:
-
-    pairup init [<dot-confs-repo>]
-
-EOS
-        exit 1
-    fi
     if [[ -z $(is_init) ]]; then
         cat <<EOS
 PairUp! environment not set up.
