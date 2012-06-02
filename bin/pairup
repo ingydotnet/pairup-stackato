@@ -103,8 +103,8 @@ function do_start() {
 
 function do_update() {
     assert_init
-    change_home
     assert_conf
+    change_home
     if [[ -n "$PAIRUP_UPDATE_COMMANDS" ]]; then
         time eval "$PAIRUP_UPDATE_COMMANDS"
     fi
@@ -129,11 +129,11 @@ function change_home() {
 
 #------------------------------------------------------------------------------
 function assert_conf() {
-    if [[ ! -f $PAIRUP_CONF ]]; then
+    if [[ ! -f $PAIRUP_APP/$PAIRUP_CONF ]]; then
         echo "No '$PAIRUP_CONF' file. Cannot continue."
         exit 1
     fi
-    source $PAIRUP_CONF
+    source $PAIRUP_APP/$PAIRUP_CONF
 }
 
 function assert_not_started() {
