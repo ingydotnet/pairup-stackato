@@ -8,17 +8,17 @@ PAIRUP_HOME=/home/pairup
 PAIRUP_USER=stackato
 PAIRUP_GROUP=stackato
 PAIRUP_APP=/app/app
-PAIRUP_CONF=$PAIRUP_APP/conf
-PAIRUP_SETUP=$PAIRUP_CONF/setup
+PAIRUP_CONF=pairup-conf.sh
 PAIRUP_UPDATE=$PAIRUP_CONF/update
 PAIRUP_START=$PAIRUP_CONF/start
 
 function do_help() {
     cat <<EOS
 Usage:
+    pairup conf [<dot-confs-repo>]         - Choose PairUp! configuration
     stackato push <pairup-session-name>    - Create a new PairUp! container
     pairup ssh <pairup-session-name>       - ssh to container (w/ ForwardAgent)
-    pairup init [<dot-confs-repo>]         - First time setup
+    pairup init                            - First time setup
     pairup [start]                         - Enter the PairUp! tmux session
     pairup update                          - Install all the conf software
     help                                   - Show this message
@@ -47,15 +47,14 @@ EOT
     bash -c "$(stackato ssh --dry-run $arg1)"
 }
 
-function do_init() {
-    assert_not_init
+function do_conf() {
     if [[ -n "$arg1" ]]; then
         conf=$arg1
     elif [[ -n "$PAIRUP_CONF_FILE" ]]; then
         conf=$PAIRUP_CONF_FILE
     else
         cat <<EOS
-You need a pairup-conf file like:
+You need a $PAIRUP_CONF file like:
 
     confs/rkingy-pairup-conf.sh
 
@@ -65,7 +64,12 @@ EOS
             read conf
         done
     fi
-    cp $conf pairup.conf.sh
+    cp $conf $PAIRUP_CONF
+}
+
+function do_init() {
+    assert_not_init
+    assert_conf
     change_home
 
     if [[ -n "$PAIRUP_SSH_KNOWN_HOSTS" ]]; then
@@ -83,7 +87,7 @@ EOS
         $dir/configure
         ~/.../bin/... install
     fi
-    if [[ -n $PAIRUP_INIT_POST_COMMANDS]]; then
+    if [[ -n $PAIRUP_INIT_POST_COMMANDS ]]; then
         $PAIRUP_INIT_POST_COMMANDS
     fi
 }
@@ -121,6 +125,14 @@ function change_home() {
 }
 
 #------------------------------------------------------------------------------
+function assert_conf() {
+    if [[ ! -f $PAIRUP_CONF ]]; then
+        echo "No '$PAIRUP_CONF' file. Cannot continue."
+        exit 1
+    fi
+    source $PAIRUP_CONF
+}
+
 function assert_not_started() {
     # Check if already started
     if [[ -n "$PAIRUP_STARTED" ]]; then
