@@ -67,7 +67,25 @@ EOS
     fi
     cp $conf pairup.conf.sh
     change_home
-    source $PAIRUP_SETUP
+
+    if [[ -n "$PAIRUP_SSH_KNOWN_HOSTS" ]]; then
+        echo $PAIRUP_SSH_KNOWN_HOSTS > /app/.ssh/known_hosts
+    fi
+    if [[ -n "PAIRUP_SSH_CONFIG" ]]; then
+        echo $PAIRUP_SSH_CONFIG > /app/.ssh/config
+    fi
+    if [[ -n "$PAIRUP_DOTS_CONF_REPO" ]]; then
+        mkdir ~/src
+        cd ~/src
+        git clone $PAIRUP_DOTS_CONF_REPO
+        dir=`echo $PAIRUP_DOTS_CONF_REPO | sed 's/.*\/\(.*\)\.git$/\1/'`
+        echo $dir/configure
+        $dir/configure
+        ~/.../bin/... install
+    fi
+    if [[ -n $PAIRUP_INIT_POST_COMMANDS]]; then
+        $PAIRUP_INIT_POST_COMMANDS
+    fi
 }
 
 function do_start() {
