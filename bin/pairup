@@ -48,26 +48,24 @@ EOT
 }
 
 function do_init() {
-    assert_not_setup
+    assert_not_init
     if [[ -n "$arg1" ]]; then
-        repo=$arg1
-    elif [[ -n "$DOT_CONF_REPO" ]]; then
-        repo=$DOT_CONF_REPO
+        conf=$arg1
+    elif [[ -n "$PAIRUP_CONF_FILE" ]]; then
+        conf=$PAIRUP_CONF_FILE
     else
         cat <<EOS
-You need a dots-conf repository like:
+You need a pairup-conf file like:
 
-    git@github.com:ouicode/rkingy-pairup.git
+    confs/rkingy-pairup-conf.sh
 
 EOS
-        while [[ -z "$repo" ]]; do
-            echo -n "Enter a git repo url: "
-            read repo
-            echo ">>$repo<<"
-            #repo=`perl -e '$_=shift;chomp;print'
+        while [[ -z "$conf" ]]; do
+            echo -n "Enter a pairup conf file name: "
+            read conf
         done
     fi
-    git clone $repo conf
+    cp $conf pairup.conf.sh
     change_home
     source $PAIRUP_SETUP
 }
@@ -75,7 +73,6 @@ EOS
 function do_start() {
     assert_not_started
     assert_init
-    assert_setup
     change_home
 
     # Prep is done
@@ -84,13 +81,12 @@ function do_start() {
 
 function do_update() {
     assert_init
-    assert_setup
     change_home
     time source $PAIRUP_UPDATE
 }
 
 #------------------------------------------------------------------------------
-function is_setup() {
+function is_init() {
     # Check is setup has happened
     if [[ `ls -a $PAIRUP_HOME | grep -c '.'` -gt 2 ]]; then
         echo 1
@@ -126,10 +122,7 @@ function assert_init() {
 EOS
         exit 1
     fi
-}
-
-function assert_setup {
-    if [[ -z $(is_setup) ]]; then
+    if [[ -z $(is_init) ]]; then
         cat <<EOS
 PairUp! environment not set up.
 Run 'pairup init' first.
@@ -138,8 +131,8 @@ EOS
     fi
 }
 
-function assert_not_setup {
-    if [[ -n $(is_setup) ]]; then
+function assert_not_init {
+    if [[ -n $(is_init) ]]; then
         cat <<EOS
 PairUp! environment already set up.
 EOS
