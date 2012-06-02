@@ -1,6 +1,6 @@
 export PAIRUP_DOTS_CONF_REPO="git@github.com:ouicode/rkingy-dots-conf.git"
 export PAIRUP_INIT_POST_COMMANDS="
-make -C ~/.../src/rking-dots.
+make -C ~/.../src/rking-dots;
 touch ~/.sudo_as_admin_successful;
 "
 
