@@ -1,29 +1,75 @@
 #!/bin/bash
 
-set -ex
+# set -ex
+set -e
 
-# Export PAIRUP variables
-export PAIRUP_HOME=/home/pairup
-export PAIRUP_USER=stackato
-export PAIRUP_GROUP=stackato
-export PAIRUP_APP=/app/app
-export PAIRUP_CONF=$PAIRUP_APP/conf
-export PAIRUP_SETUP=$PAIRUP_CONF/setup
-export PAIRUP_UPDATE=$PAIRUP_CONF/update
-export PAIRUP_START=$PAIRUP_CONF/start
+# Set PAIRUP variables
+PAIRUP_HOME=/home/pairup
+PAIRUP_USER=stackato
+PAIRUP_GROUP=stackato
+PAIRUP_APP=/app/app
+PAIRUP_CONF=$PAIRUP_APP/conf
+PAIRUP_SETUP=$PAIRUP_CONF/setup
+PAIRUP_UPDATE=$PAIRUP_CONF/update
+PAIRUP_START=$PAIRUP_CONF/start
 
 function do_help() {
     cat <<EOS
-Usage: pairup [ start | setup | update | help ]
-
-    start - Start the PairUp! environment
-    setup - Setup the PairUp! environment
-    update - Update the PairUp! environment
-    help - Show this message
-
-With no arguments, defaults to 'start'.
+Usage:
+    stackato push <pairup-session-name>    - Create a new PairUp! container
+    pairup ssh <pairup-session-name>       - ssh to container (w/ ForwardAgent)
+    pairup init [<dot-confs-repo>]         - First time setup
+    pairup [start]                         - Enter the PairUp! tmux session
+    pairup update                          - Install all the conf software
+    help                                   - Show this message
 
 EOS
+}
+
+function do_ssh() {
+    if [[ -z "$arg1" ]]; then
+        echo "PairUp! session name required"
+        exit 1
+    fi
+
+    grep ForwardAgent ~/.ssh/config > /dev/null || cat <<EOT
+You probably want this in your ~/.ssh/config:
+
+Host *
+    ForwardAgent yes
+
+...or else the repos you check out on your PairUp! session will have a hard
+time "push"ing like you're used to.
+
+(Connecting anyway...)
+EOT
+
+    bash -c "$(stackato ssh --dry-run $arg1)"
+}
+
+function do_init() {
+    assert_not_setup
+    if [[ -n "$arg1" ]]; then
+        repo=$arg1
+    elif [[ -n "$DOT_CONF_REPO" ]]; then
+        repo=$DOT_CONF_REPO
+    else
+        cat <<EOS
+You need a dots-conf repository like:
+
+    git@github.com:ouicode/rkingy-pairup.git
+
+EOS
+        while [[ -z "$repo" ]]; do
+            echo -n "Enter a git repo url: "
+            read repo
+            echo ">>$repo<<"
+            #repo=`perl -e '$_=shift;chomp;print'
+        done
+    fi
+    git clone $repo conf
+    change_home
+    source $PAIRUP_SETUP
 }
 
 function do_start() {
@@ -34,13 +80,6 @@ function do_start() {
 
     # Prep is done
     source $PAIRUP_START
-}
-
-function do_setup() {
-    assert_init
-    assert_not_setup
-    change_home
-    source $PAIRUP_SETUP
 }
 
 function do_update() {
@@ -80,11 +119,9 @@ function assert_not_started() {
 function assert_init() {
     if [[ ! -d $PAIRUP_CONF ]]; then
         cat <<EOS
-'$PAIRUP_CONF' does not exist.
+'$PAIRUP_CONF' does not exist. Run this command:
 
-Try a command like this one:
-
-    git clone git@github.com:ouicode/rkingy-pairup.git conf
+    pairup init [<dot-confs-repo>]
 
 EOS
         exit 1
@@ -95,7 +132,7 @@ function assert_setup {
     if [[ -z $(is_setup) ]]; then
         cat <<EOS
 PairUp! environment not set up.
-Run 'pairup setup' first.
+Run 'pairup init' first.
 EOS
         exit 1
     fi
@@ -112,6 +149,13 @@ EOS
 
 #------------------------------------------------------------------------------
 
-[[ -n "$1" ]] && command=$1 || command="start"
-[[ $command == '-?' ]] || [[ $command == '-h' ]] || [[ $command == '--help' ]] && command="help"
+if [[ -n "$1" ]]; then
+    command="$1"
+    shift
+else
+    command="start"
+fi
+arg1="$1"
+[[ $command == '-?' ]] || [[ $command == '-h' ]] ||
+    [[ $command == '--help' ]] && command="help"
 do_$command
