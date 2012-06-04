@@ -86,9 +86,6 @@ sudo apt-get install man-db &
         rm -fr stackato-pairup-usr-local
         git reset --hard
     fi
-
-    # TODO: Make this copy recursively (if we need it for more than this one)
-    sudo cp /usr/local/etc/profile.d/rvm.sh /etc/profile.d
 )
 
 # Favorite git repos:
