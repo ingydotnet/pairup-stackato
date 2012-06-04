@@ -1,3 +1,5 @@
+PAIRUP_SESSION=pairup-rkingy
+
 PAIRUP_DOTS_CONF_REPO="git@github.com:ouicode/rkingy-dots-conf.git"
 PAIRUP_INIT_POST_COMMANDS="
 make -C ~/.../src/rking-dots;

@@ -15,7 +15,7 @@ function do_help() {
     cat <<EOS
 Usage:
     pairup conf [<dot-confs-repo>]         - Choose PairUp! configuration
-    stackato push <pairup-session-name>    - Create a new PairUp! container
+    pairup create [<session-name>]         - Create a remote PairUp! session
     pairup ssh <pairup-session-name>       - ssh to container (w/ ForwardAgent)
     pairup init                            - First time setup
     pairup [start]                         - Enter the PairUp! tmux session
@@ -25,8 +25,35 @@ Usage:
 EOS
 }
 
+function do_create() {
+    assert_conf $PAIRUP_CONF
+    SESSION=${1:-$PAIRUP_SESSION}
+    stackato push $SESSION -n
+    do_ssh $SESSION
+}
+
+function do_conf() {
+    if [[ -n "$1" ]]; then
+        conf=$1
+    elif [[ -n "$PAIRUP_CONF_FILE" ]]; then
+        conf=$PAIRUP_CONF_FILE
+    else
+        cat <<EOS
+You need a $PAIRUP_CONF file like:
+
+    confs/rkingy-pairup-conf.sh
+
+EOS
+        while [[ -z "$conf" ]]; do
+            echo -n "Enter a pairup conf file name: "
+            read conf
+        done
+    fi
+    cp $conf $PAIRUP_CONF
+}
+
 function do_ssh() {
-    if [[ -z "$arg1" ]]; then
+    if [[ -z "$1" ]]; then
         echo "PairUp! session name required"
         exit 1
     fi
@@ -43,27 +70,7 @@ time "push"ing like you're used to.
 (Connecting anyway...)
 EOT
 
-    bash -c "$(stackato ssh --dry-run $arg1)"
-}
-
-function do_conf() {
-    if [[ -n "$arg1" ]]; then
-        conf=$arg1
-    elif [[ -n "$PAIRUP_CONF_FILE" ]]; then
-        conf=$PAIRUP_CONF_FILE
-    else
-        cat <<EOS
-You need a $PAIRUP_CONF file like:
-
-    confs/rkingy-pairup-conf.sh
-
-EOS
-        while [[ -z "$conf" ]]; do
-            echo -n "Enter a pairup conf file name: "
-            read conf
-        done
-    fi
-    cp $conf $PAIRUP_CONF
+    bash -c "$(stackato ssh --dry-run $1)"
 }
 
 function do_init() {
@@ -129,11 +136,12 @@ function change_home() {
 
 #------------------------------------------------------------------------------
 function assert_conf() {
-    if [[ ! -f $PAIRUP_APP/$PAIRUP_CONF ]]; then
-        echo "No '$PAIRUP_CONF' file. Cannot continue."
+    local conf=${1:-$PAIRUP_APP/$PAIRUP_CONF}
+    if [[ ! -f $conf ]]; then
+        echo "No '$conf' file. Cannot continue."
         exit 1
     fi
-    source $PAIRUP_APP/$PAIRUP_CONF
+    source $conf
 }
 
 function assert_not_started() {
@@ -172,7 +180,6 @@ if [[ -n "$1" ]]; then
 else
     command="start"
 fi
-arg1="$1"
 [[ $command == '-?' ]] || [[ $command == '-h' ]] ||
     [[ $command == '--help' ]] && command="help"
-do_$command
+do_$command "$@"
