@@ -60,7 +60,6 @@ sudo apt-get -y install -o Dpkg::Options::="--force-confold" \
     links \
     lxc \
     lxcguest \
-    man-db \
     mlocate \
     netpbm \
     perl-doc \
@@ -71,6 +70,9 @@ sudo apt-get -y install -o Dpkg::Options::="--force-confold" \
     uuid-dev \
     weechat-{plugins,scripts} \
     zsh \
+
+# takes a while...
+sudo apt-get install man-db &
 
 # Formerly installed /usr/local (major speed hack):
 (
