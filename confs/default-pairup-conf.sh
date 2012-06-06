@@ -1,6 +1,6 @@
 PAIRUP_SESSION=pairup-rkingy
 
-PAIRUP_DOTS_CONF_REPO="git@github.com:ouicode/rkingy-dots-conf.git"
+PAIRUP_DOTS_CONF_REPO="git@github.com:pairup/pairup-dots-conf.git"
 PAIRUP_INIT_POST_COMMANDS="
 make -C ~/.../src/rking-dots;
 touch ~/.sudo_as_admin_successful;
@@ -81,7 +81,7 @@ sudo apt-get install man-db &
         git pull origin master
     else
         sudo chown -R stackato.stackato .
-        git clone git@github.com:ouicode/stackato-pairup-usr-local.git
+        git clone git@github.com:pairup/stackato-pairup-usr-local.git
         mv stackato-pairup-usr-local/.git .
         rm -fr stackato-pairup-usr-local
         git reset --hard
@@ -90,14 +90,7 @@ sudo apt-get install man-db &
 
 # Favorite git repos:
 repos='
-git@github.com:ingydotnet/cogdb-pm.git
-git@github.com:ingydotnet/pegex-pgx.git
-git@github.com:ingydotnet/pegex-pm.git
-git@github.com:ingydotnet/stackato-stackrad-pm.git
-git@github.com:ingydotnet/testml-pm.git
-git@github.com:ingydotnet/testml-tml.git
-git@github.com:ryanjosephking/pegex-rb.git
-ingy@ingy.net:rkingy-cog.git
+git@github.com:pairup/pairup.git
 '
 (
     cd ~/src
@@ -105,8 +98,6 @@ ingy@ingy.net:rkingy-cog.git
         git clone $repo || true
     done
 )
-## rking wants this:
-# git@github.com:ingydotnet/{cogdb-pm,pegex-{pgx,pm},stackato-stackrad-pm,testml-{pm,tml}}.git \
 
 # Kick-off the vim-addon-manager steps.
 yes '' | vim +q
