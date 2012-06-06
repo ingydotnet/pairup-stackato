@@ -39,7 +39,8 @@ function do_create {
     SESSION=${1:-$PAIRUP_SESSION}
     terse_time stackato push $SESSION -n
     echo
-    echo Now you are ready to `format_as_cmd "$0 ssh $SESSION"`
+    echo Now you are ready to:
+    format_as_cmd "$0 ssh $SESSION"
     echo '  (…then' `format_as_cmd "pairup init"` \
             'from inside the Stackato VM.)'
 }
@@ -62,7 +63,21 @@ EOS
         done
     fi
     cp $conf $PAIRUP_CONF
-    echo Now you are ready to `format_as_cmd "$0 create pairup-<somename>"`
+    cat <<EOT
+                         ┌──┐
+                         ├╴ │
+                _____. ^ │╶─┴┐
+               / ____|   └───┘
+          ____| O_________™
+         /     \\___ \\     \\
+        |     .____O |     |
+         \\_...|_____...___/
+               PairUp!™
+
+   [Enering $conf mode.]
+
+OK, now you are ready to `format_as_cmd "$0 create pairup-<somename>"`
+EOT
 }
 
 function do_ssh {
@@ -140,7 +155,7 @@ function do_update {
 #------------------------------------------------------------------------------
 function is_init {
     # Check is setup has happened
-    if [[ `ls -A $PAIRUP_HOME | wc -l` -gt 0 ]]; then
+    if [[ `ls -A $PAIRUP_HOME 2>/dev/null | wc -l` -gt 0 ]]; then
         echo 1
     fi
 }
@@ -158,7 +173,8 @@ function change_home {
 function assert_conf {
     local conf=${1:-$PAIRUP_APP/$PAIRUP_CONF}
     if [[ ! -f $conf ]]; then
-        echo "No '$conf' file. Cannot continue."
+        format_as_error "No '$conf' file. Cannot continue."
+        echo "Try something like: " `format_as_cmd "$0 conf confs/rkingy-pairup-conf.sh"`
         exit 1
     fi
     source $conf
@@ -167,7 +183,7 @@ function assert_conf {
 function assert_on_vm {
     if [ ! -d /app ]; then
         cat <<EOT
-[31mNot on Stackato VM[0m
+`format_as_error "Not on Stackato VM."`
  …so `format_as_cmd "$0 $command"` would be undesirable.
 
 Try `format_as_cmd "$0 ssh <appname>"`
@@ -203,6 +219,10 @@ PairUp! environment already set up.
 EOS
         exit 1
     fi
+}
+
+function format_as_error {
+    /bin/echo -e "[\e[31;1m$@\e[0m]"
 }
 
 function format_as_cmd {
