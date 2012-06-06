@@ -110,4 +110,5 @@ ingy@ingy.net:rkingy-cog.git
 
 # Kick-off the vim-addon-manager steps.
 yes '' | vim +q
+: Note - the above command seems to be nonworking. Run it after you "exec zsh"
 ...

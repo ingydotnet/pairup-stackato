@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -ex
+set -e
+# set -x
 
 # Set PAIRUP variables
 PAIRUP_HOME=/home/pairup
@@ -11,7 +12,7 @@ PAIRUP_CONF=pairup-conf.sh
 PAIRUP_UPDATE=$PAIRUP_CONF/update
 PAIRUP_START=$PAIRUP_CONF/start
 
-function do_help() {
+function do_help {
     cat <<EOS
 Usage:
     pairup conf [<dot-confs-repo>]         - Choose PairUp! configuration
@@ -25,14 +26,25 @@ Usage:
 EOS
 }
 
-function do_create() {
-    assert_conf $PAIRUP_CONF
-    SESSION=${1:-$PAIRUP_SESSION}
-    stackato push $SESSION -n
-    do_ssh $SESSION
+function terse_time {
+    if [ -e /usr/bin/time ]; then
+        /usr/bin/time -f "[34mtime, real: [0m%E" "$@"
+    else
+        time "$@"
+    fi
 }
 
-function do_conf() {
+function do_create {
+    assert_conf $PAIRUP_CONF
+    SESSION=${1:-$PAIRUP_SESSION}
+    terse_time stackato push $SESSION -n
+    echo
+    echo Now you are ready to `format_as_cmd "$0 ssh $SESSION"`
+    echo '  (…then' `format_as_cmd "pairup init"` \
+            'from inside the Stackato VM.)'
+}
+
+function do_conf {
     if [[ -n "$1" ]]; then
         conf=$1
     elif [[ -n "$PAIRUP_CONF_FILE" ]]; then
@@ -45,16 +57,17 @@ You need a $PAIRUP_CONF file like:
 
 EOS
         while [[ -z "$conf" ]]; do
-            echo -n "Enter a pairup conf file name: "
+            echo -n 'Enter a pairup conf file name: '
             read conf
         done
     fi
     cp $conf $PAIRUP_CONF
+    echo Now you are ready to `format_as_cmd "$0 create pairup-<somename>"`
 }
 
-function do_ssh() {
+function do_ssh {
     if [[ -z "$1" ]]; then
-        echo "PairUp! session name required"
+        echo 'PairUp! session name required.'
         exit 1
     fi
 
@@ -70,10 +83,13 @@ time "push"ing like you're used to.
 (Connecting anyway...)
 EOT
 
-    bash -c "$(stackato ssh --dry-run $1)"
+    # Doesn't time the speed of the command - unless you immediately ^d, of
+    # course. It's more of a session timer.
+    terse_time bash -c "$(stackato ssh --dry-run $1)"
 }
 
-function do_init() {
+function do_init {
+    assert_on_vm
     assert_not_init
     assert_conf
     change_home
@@ -96,9 +112,12 @@ function do_init() {
     if [[ -n "$PAIRUP_INIT_POST_COMMANDS" ]]; then
         eval "$PAIRUP_INIT_POST_COMMANDS"
     fi
+    /bin/echo -e "\n\e[36;1mAlmost done.\e[0m"
+    echo Now `format_as_cmd "pairup update"` 'and everything should be set!'
 }
 
-function do_start() {
+function do_start {
+    assert_on_vm
     assert_not_started
     assert_init
     assert_conf
@@ -108,24 +127,25 @@ function do_start() {
     fi
 }
 
-function do_update() {
+function do_update {
+    assert_on_vm
     assert_init
     assert_conf
     change_home
     if [[ -n "$PAIRUP_UPDATE_COMMANDS" ]]; then
-        time eval "$PAIRUP_UPDATE_COMMANDS"
+        terse_time eval "$PAIRUP_UPDATE_COMMANDS"
     fi
 }
 
 #------------------------------------------------------------------------------
-function is_init() {
+function is_init {
     # Check is setup has happened
-    if [[ `ls -a $PAIRUP_HOME | grep -c '.'` -gt 2 ]]; then
+    if [[ `ls -A $PAIRUP_HOME | wc -l` -gt 0 ]]; then
         echo 1
     fi
 }
 
-function change_home() {
+function change_home {
     # Switch HOME dirs
     [[ ! -d $PAIRUP_HOME ]] &&
         sudo mkdir $PAIRUP_HOME &&
@@ -135,7 +155,7 @@ function change_home() {
 }
 
 #------------------------------------------------------------------------------
-function assert_conf() {
+function assert_conf {
     local conf=${1:-$PAIRUP_APP/$PAIRUP_CONF}
     if [[ ! -f $conf ]]; then
         echo "No '$conf' file. Cannot continue."
@@ -144,7 +164,20 @@ function assert_conf() {
     source $conf
 }
 
-function assert_not_started() {
+function assert_on_vm {
+    if [ ! -d /app ]; then
+        cat <<EOT
+[31mNot on Stackato VM[0m
+ …so `format_as_cmd "$0 $command"` would be undesirable.
+
+Try `format_as_cmd "$0 ssh <appname>"`
+ (after `format_as_cmd "$0 conf <yourconf>.sh"` and `format_as_cmd "$0 create <appname>"`)
+EOT
+        exit 2
+    fi
+}
+
+function assert_not_started {
     # Check if already started
     if [[ -n "$PAIRUP_STARTED" ]]; then
         echo "You are already inside a PairUp! session."
@@ -153,11 +186,11 @@ function assert_not_started() {
     export PAIRUP_STARTED=1
 }
 
-function assert_init() {
+function assert_init {
     if [[ -z $(is_init) ]]; then
-        cat <<EOS
+        cat <<'EOS'
 PairUp! environment not set up.
-Run 'pairup init' first.
+Run `pairup init` first.
 EOS
         exit 1
     fi
@@ -170,6 +203,10 @@ PairUp! environment already set up.
 EOS
         exit 1
     fi
+}
+
+function format_as_cmd {
+    /bin/echo -e "\`\e[36m$@\e[0m\`"
 }
 
 #------------------------------------------------------------------------------
