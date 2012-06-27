@@ -31,60 +31,62 @@ read -r -d '' PAIRUP_UPDATE_COMMANDS <<'...' || true
 sudo apt-get -y update
 sudo apt-get -y install -o Dpkg::Options::="--force-confold" \
     aptitude \
-    elinks \
-    elinks-data \
-    groff \
-    groff-base \
-    imagemagick \
-    inotify-tools \
-    libcap2-bin \
-    libcdt4 \
-    libdjvulibre-text \
-    libdjvulibre21 \
-    libgraph4 \
-    libgvc5 \
-    libilmbase6 \
-    libinotifytools0 \
-    liblua50 \
-    liblualib50 \
-    libmagickcore3-extra \
     libnet-ssleay-perl \
-    libnetpbm10 \
-    libopenexr6 \
-    libpathplan4 \
     libperl5.10 \
-    libpipeline1 \
-    libwmf0.2-7 \
     links \
-    lxc \
-    lxcguest \
-    mlocate \
-    netpbm \
     perl-doc \
-    pinfo \
-    psutils \
-    sl \
     strace \
     uuid-dev \
     weechat-{plugins,scripts} \
-    zsh \
+
+
+#     elinks \
+#     elinks-data \
+#     groff \
+#     groff-base \
+#     imagemagick \
+#     inotify-tools \
+#     libcap2-bin \
+#     libcdt4 \
+#     libdjvulibre-text \
+#     libdjvulibre21 \
+#     libgraph4 \
+#     libgvc5 \
+#     libilmbase6 \
+#     libinotifytools0 \
+#     liblua50 \
+#     liblualib50 \
+#     libmagickcore3-extra \
+#     libnetpbm10 \
+#     libopenexr6 \
+#     libpathplan4 \
+#     libpipeline1 \
+#     libwmf0.2-7 \
+#     lxc \
+#     lxcguest \
+#     mlocate \
+#     netpbm \
+#     pinfo \
+#     psutils \
+#     sl \
+#     zsh \
 
 # takes a while...
 sudo apt-get install man-db &
 
-# Formerly installed /usr/local (major speed hack):
-(
-    cd /usr/local
-    if [[ -d .git ]]; then
-        git pull origin master
-    else
-        sudo chown -R stackato.stackato .
-        git clone git@github.com:ouicode/stackato-pairup-usr-local.git
-        mv stackato-pairup-usr-local/.git .
-        rm -fr stackato-pairup-usr-local
-        git reset --hard
-    fi
-)
+# # Formerly installed /usr/local (major speed hack):
+# (
+#     cd /usr/local
+#     if [[ -d .git ]]; then
+#         git pull origin master
+#     else
+#         sudo chown -R stackato.stackato .
+#         git clone git@github.com:ouicode/stackato-pairup-usr-local.git
+#         mv stackato-pairup-usr-local/.git .
+#         rm -fr stackato-pairup-usr-local
+#         git reset --hard
+#     fi
+# )
 
 # Favorite git repos:
 repos='
