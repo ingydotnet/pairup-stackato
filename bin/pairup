@@ -58,7 +58,7 @@ function do_conf {
         cat <<EOS
 You need a $PAIRUP_CONF file like:
 
-    confs/pairup-conf.sh
+    confs/sample-pairup-conf.sh
 
 EOS
         while [[ -z "$conf" ]]; do
@@ -176,7 +176,7 @@ function assert_conf {
     local conf=${1:-$PAIRUP_APP/$PAIRUP_CONF}
     if [[ ! -f $conf ]]; then
         format_as_error "No '$conf' file. Cannot continue."
-        echo "Try something like: " `format_as_cmd "$0 conf confs/pairup-conf.sh"`
+        echo "Try something like: " `format_as_cmd "$0 conf confs/sample-pairup-conf.sh"`
         exit 1
     fi
     source $conf
