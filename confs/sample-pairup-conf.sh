@@ -35,12 +35,12 @@ sudo apt-get -y install -o Dpkg::Options::="--force-confold" \
     groff-base \
     libnet-ssleay-perl \
     libperl5.10 \
+    libpipeline1 \
     links \
     perl-doc \
     strace \
     uuid-dev \
     weechat-{plugins,scripts} \
-
 
 #     elinks \
 #     elinks-data \
@@ -62,7 +62,6 @@ sudo apt-get -y install -o Dpkg::Options::="--force-confold" \
 #     libnetpbm10 \
 #     libopenexr6 \
 #     libpathplan4 \
-#     libpipeline1 \
 #     libwmf0.2-7 \
 #     lxc \
 #     lxcguest \
