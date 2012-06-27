@@ -31,6 +31,8 @@ read -r -d '' PAIRUP_UPDATE_COMMANDS <<'...' || true
 sudo apt-get -y update
 sudo apt-get -y install -o Dpkg::Options::="--force-confold" \
     aptitude \
+    groff \
+    groff-base \
     libnet-ssleay-perl \
     libperl5.10 \
     links \
