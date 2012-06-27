@@ -115,14 +115,12 @@ function do_init {
     if [[ -n "PAIRUP_SSH_CONFIG" ]]; then
         echo $PAIRUP_SSH_CONFIG > /app/.ssh/config
     fi
-    if [[ -n "$PAIRUP_DOTS_CONF_REPO" ]]; then
-        mkdir ~/src
-        cd ~/src
-        git clone $PAIRUP_DOTS_CONF_REPO
-        dir=`echo $PAIRUP_DOTS_CONF_REPO | sed 's/.*\/\(.*\)\.git$/\1/'`
-        echo $dir/configure
-        $dir/configure
-        ~/.../bin/... install
+    if [[ -n "$PAIRUP_DOTS_CONF" ]]; then
+        cd
+        git clone $PAIRUP_DOTDOTDOT_REPO ...
+        scp $PAIRUP_DOTS_CONF .../conf
+        .../... update
+        .../... install
     fi
     if [[ -n "$PAIRUP_INIT_POST_COMMANDS" ]]; then
         eval "$PAIRUP_INIT_POST_COMMANDS"
