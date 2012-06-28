@@ -1,13 +1,10 @@
 #!/bin/bash -e
 
 if [[ -n "$1" ]]; then
-    list="${PAIRUP_GIT_REPOS}_$1"
+    list=$(eval echo $`echo PAIRUP_GIT_REPOS${1}`);
 else
     list=$PAIRUP_GIT_REPOS
 fi
-
-list=$PAIRUP_GIT_REPOS
-[[ -n "$1" ]] && list="${list}_$1"
 
 if [[ -n "$list" ]]; then
     (

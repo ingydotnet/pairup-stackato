@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 if [[ -n "$1" ]]; then
-    list="${PAIRUP_APT_GET}_$1"
+    list=$(eval echo $`echo PAIRUP_APT_GET_${1}`);
 else
     list=$PAIRUP_APT_GET
 fi
