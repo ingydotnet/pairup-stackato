@@ -3,7 +3,7 @@
 if [[ -n "$PAIRUP_DOTS_CONF" ]]; then
     cd
     git clone $PAIRUP_DOTDOTDOT_REPO ...
-    scp $PAIRUP_DOTS_CONF .../conf
+    echo $PAIRUP_DOTS_CONF > .../conf
     .../... update
     .../... install
 fi

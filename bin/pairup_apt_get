@@ -1,7 +1,12 @@
 #!/bin/bash -e
 
-if [[ -n "$PAIRUP_DEB_PKGS" ]]; then
+list=$PAIRUP_APT_GET
+[[ -n "$1" ]] && list="${list}_$1"
+
+if [ -n "$list" ]; then
     sudo apt-get -y update
-    echo $PAIRUP_DEB_PKGS | \
+    echo $list | \
         xargs sudo apt-get -y install -o Dpkg::Options::="--force-confold"
+else
+    echo "'$list' variable is not defined"
 fi

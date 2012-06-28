@@ -1,11 +1,16 @@
 #!/bin/bash -e
 
-if [[ -n "$PAIRUP_GIT_REPOS" ]]; then
+list=$PAIRUP_GIT_REPOS
+[[ -n "$1" ]] && list="${list}_$1"
+
+if [[ -n "$list" ]]; then
     (
         mkdir -p ~/src
         cd ~/src
-        for repo in $PAIRUP_GIT_REPOS; do
+        for repo in $list; do
             git clone $repo || true
         done
     )
+else
+    echo "'$list' variable is not defined"
 fi
