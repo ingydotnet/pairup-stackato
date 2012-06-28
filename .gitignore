@@ -5,3 +5,5 @@ pairup-conf.sh
 manifest.yml
 conf/
 pair/
+pairup-conf
+*-pairup-conf
