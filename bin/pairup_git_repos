@@ -1,5 +1,11 @@
 #!/bin/bash -e
 
+if [[ -n "$1" ]]; then
+    list="${PAIRUP_GIT_REPOS}_$1"
+else
+    list=$PAIRUP_GIT_REPOS
+fi
+
 list=$PAIRUP_GIT_REPOS
 [[ -n "$1" ]] && list="${list}_$1"
 
@@ -12,5 +18,5 @@ if [[ -n "$list" ]]; then
         done
     )
 else
-    echo "'$list' variable is not defined"
+    echo "'PAIRUP_GIT_REPOS(_$1)' variable is not defined"
 fi

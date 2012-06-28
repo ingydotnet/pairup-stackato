@@ -1,12 +1,15 @@
 #!/bin/bash -e
 
-list=$PAIRUP_APT_GET
-[[ -n "$1" ]] && list="${list}_$1"
+if [[ -n "$1" ]]; then
+    list="${PAIRUP_APT_GET}_$1"
+else
+    list=$PAIRUP_APT_GET
+fi
 
 if [ -n "$list" ]; then
     sudo apt-get -y update
     echo $list | \
         xargs sudo apt-get -y install -o Dpkg::Options::="--force-confold"
 else
-    echo "'$list' variable is not defined"
+    echo "'PAIRUP_APT_GET(_$1)' variable is not defined"
 fi
