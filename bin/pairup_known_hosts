@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+if [[ -n "$PAIRUP_SSH_KNOWN_HOSTS" ]]; then
+    echo $PAIRUP_SSH_KNOWN_HOSTS > /app/.ssh/known_hosts
+fi
+

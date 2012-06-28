@@ -1,0 +1,7 @@
+#!/bin/bash -e
+
+if [[ -n "$PAIRUP_DEB_PKGS" ]]; then
+    sudo apt-get -y update
+    echo $PAIRUP_DEB_PKGS | \
+        xargs sudo apt-get -y install -o Dpkg::Options::="--force-confold"
+fi

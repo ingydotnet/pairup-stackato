@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+if [[ -n "$PAIRUP_GIT_REPOS" ]]; then
+    (
+        mkdir -p ~/src
+        cd ~/src
+        for repo in $PAIRUP_GIT_REPOS; do
+            git clone $repo || true
+        done
+    )
+fi

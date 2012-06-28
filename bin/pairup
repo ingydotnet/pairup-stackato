@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -xe
 # set -x
 
 # Set PAIRUP variables
@@ -8,19 +8,16 @@ PAIRUP_HOME=/home/pairup
 PAIRUP_USER=stackato
 PAIRUP_GROUP=stackato
 PAIRUP_APP=/app/app
-PAIRUP_CONF=pairup-conf.sh
-PAIRUP_UPDATE=$PAIRUP_CONF/update
-PAIRUP_START=$PAIRUP_CONF/start
+PAIRUP_CONF_DIR=pairup-conf
+PAIRUP_CONF=$PAIRUP_CONF_DIR/conf
 
 function do_help {
     cat <<EOS
 Usage:
-    pairup conf [<dot-confs-repo>]         - Choose PairUp! configuration
     pairup create [<session-name>]         - Create a remote PairUp! session
     pairup ssh <pairup-session-name>       - ssh to container (w/ ForwardAgent)
-    pairup init                            - First time setup
+    pairup setup                           - Initial setup of PairUp! environment
     pairup [start]                         - Enter the PairUp! tmux session
-    pairup update                          - Install all the conf software
     help                                   - Show this message
 
 EOS
@@ -45,43 +42,8 @@ function do_create {
     echo
     echo Now you are ready to:
     format_as_cmd "$0 ssh $SESSION"
-    echo '  (…then' `format_as_cmd "pairup init"` \
+    echo '  (…then' `format_as_cmd "pairup setup"` \
             'from inside the Stackato VM.)'
-}
-
-function do_conf {
-    if [[ -n "$1" ]]; then
-        conf=$1
-    elif [[ -n "$PAIRUP_CONF_FILE" ]]; then
-        conf=$PAIRUP_CONF_FILE
-    else
-        cat <<EOS
-You need a $PAIRUP_CONF file like:
-
-    confs/sample-pairup-conf.sh
-
-EOS
-        while [[ -z "$conf" ]]; do
-            echo -n 'Enter a pairup conf file name: '
-            read conf
-        done
-    fi
-    cp $conf $PAIRUP_CONF
-    cat <<EOT
-                         ┌──┐
-                         ├╴ │
-                _____. ^ │╶─┴┐
-               / ____|   └───┘
-          ____| O_________™
-         /     \\___ \\     \\
-        |     .____O |     |
-         \\_...|_____...___/
-               PairUp!™
-
-   [Enering $conf mode.]
-
-OK, now you are ready to `format_as_cmd "$0 create pairup-<somename>"`
-EOT
 }
 
 function do_ssh {
@@ -107,55 +69,37 @@ EOT
     terse_time bash -c "$(stackato ssh --dry-run $1)"
 }
 
-function do_init {
+function do_setup {
     assert_on_vm
-    assert_not_init
+    assert_not_setup
     assert_conf
     change_home
 
-    if [[ -n "$PAIRUP_SSH_KNOWN_HOSTS" ]]; then
-        echo $PAIRUP_SSH_KNOWN_HOSTS > /app/.ssh/known_hosts
-    fi
-    if [[ -n "PAIRUP_SSH_CONFIG" ]]; then
-        echo $PAIRUP_SSH_CONFIG > /app/.ssh/config
-    fi
-    if [[ -n "$PAIRUP_DOTS_CONF" ]]; then
-        cd
-        git clone $PAIRUP_DOTDOTDOT_REPO ...
-        scp $PAIRUP_DOTS_CONF .../conf
-        .../... update
-        .../... install
-    fi
-    if [[ -n "$PAIRUP_INIT_POST_COMMANDS" ]]; then
-        eval "$PAIRUP_INIT_POST_COMMANDS"
-    fi
-    /bin/echo -e "\n\e[36;1mAlmost done.\e[0m"
-    echo Now `format_as_cmd "pairup update"` 'and everything should be set!'
+    pairup_setup
+
+    /bin/echo -e "\n\e[36;1mPairUp! setup is complete.\e[0m"
+    echo Now run `format_as_cmd "pairup"` 'and start hacking!'
 }
 
 function do_start {
     assert_on_vm
     assert_not_started
-    assert_init
+    assert_setup
     assert_conf
     change_home
-    if [[ -n "$PAIRUP_START_COMMANDS" ]]; then
-        eval "$PAIRUP_START_COMMANDS"
+    if [[ $(ps aux | grep -c '[t]mux') -eq 0 ]]; then
+        command='tmux -2'
+    else
+        command='tmux -2 a'
     fi
+
+    export TMUXESC=a TMUXCOLOR=white
+    exec /bin/bash -c "$command"
 }
 
-function do_update {
-    assert_on_vm
-    assert_init
-    assert_conf
-    change_home
-    if [[ -n "$PAIRUP_UPDATE_COMMANDS" ]]; then
-        terse_time eval "$PAIRUP_UPDATE_COMMANDS"
-    fi
-}
 
 #------------------------------------------------------------------------------
-function is_init {
+function is_setup {
     # Check is setup has happened
     if [[ `ls -A $PAIRUP_HOME 2>/dev/null | wc -l` -gt 0 ]]; then
         echo 1
@@ -173,13 +117,18 @@ function change_home {
 
 #------------------------------------------------------------------------------
 function assert_conf {
-    local conf=${1:-$PAIRUP_APP/$PAIRUP_CONF}
-    if [[ ! -f $conf ]]; then
-        format_as_error "No '$conf' file. Cannot continue."
-        echo "Try something like: " `format_as_cmd "$0 conf confs/sample-pairup-conf.sh"`
+    if [[ ! -d $PAIRUP_CONF_DIR ]]; then
+        echo "You need a ./pairup-conf repo directory."
+        echo "Try:"
+        echo "    git clone https://github.com/sharpsaw/rkingy-pairup-conf.git pairup-conf"
         exit 1
     fi
-    source $conf
+    if [[ ! -f $PAIRUP_CONF ]]; then
+        format_as_error "No '$PAIRUP_CONF' file. Cannot continue."
+        exit 1
+    fi
+    source $PAIRUP_CONF
+    export PATH=$PAIRUP_APP/$PAIRUP_CONF_DIR/bin:$PATH
 }
 
 function assert_on_vm {
@@ -204,18 +153,18 @@ function assert_not_started {
     export PAIRUP_STARTED=1
 }
 
-function assert_init {
-    if [[ -z $(is_init) ]]; then
+function assert_setup {
+    if [[ -z $(is_setup) ]]; then
         cat <<'EOS'
 PairUp! environment not set up.
-Run `pairup init` first.
+Run `pairup setup` first.
 EOS
         exit 1
     fi
 }
 
-function assert_not_init {
-    if [[ -n $(is_init) ]]; then
+function assert_not_setup {
+    if [[ -n $(is_setup) ]]; then
         cat <<EOS
 PairUp! environment already set up.
 EOS

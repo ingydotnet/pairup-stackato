@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+if [[ -n "PAIRUP_SSH_CONFIG" ]]; then
+    echo $PAIRUP_SSH_CONFIG > /app/.ssh/config
+fi
+
