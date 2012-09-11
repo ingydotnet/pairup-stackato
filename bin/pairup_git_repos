@@ -1,19 +1,16 @@
 #!/bin/bash -e
 
 if [[ -n "$1" ]]; then
-    list=$(eval echo $`echo PAIRUP_GIT_REPOS${1}`);
+    var_name=$PAIRUP_GIT_REPOS_$1
+    list=$(eval echo $`$var_name`);
 else
+    var_name=PAIRUP_GIT_REPOS
     list=$PAIRUP_GIT_REPOS
 fi
+[[ -n "$list" ]] || (echo "$0: '\$$var_name' env var undefined."; exit 1)
 
-if [[ -n "$list" ]]; then
-    (
-        mkdir -p ~/src
-        cd ~/src
-        for repo in $list; do
-            git clone $repo || true
-        done
-    )
-else
-    echo "'PAIRUP_GIT_REPOS(_$1)' variable is not defined"
-fi
+mkdir -p ~/src
+cd ~/src
+for repo in $list; do
+    git clone $repo || true
+done

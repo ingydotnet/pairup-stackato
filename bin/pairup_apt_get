@@ -1,15 +1,13 @@
 #!/bin/bash -e
 
 if [[ -n "$1" ]]; then
-    list=$(eval echo $`echo PAIRUP_APT_GET_${1}`);
+    var_name=$PAIRUP_APT_GET_$1
+    list=$(eval echo $`$var_name`);
 else
+    var_name=PAIRUP_APT_GET
     list=$PAIRUP_APT_GET
 fi
+[[ -n "$list" ]] || (echo "$0: '\$$var_name' env var undefined."; exit 1)
 
-if [ -n "$list" ]; then
-    sudo apt-get -y update
-    echo $list | \
-        xargs sudo apt-get -y install -o Dpkg::Options::="--force-confold"
-else
-    echo "'PAIRUP_APT_GET(_$1)' variable is not defined"
-fi
+sudo apt-get -y update
+echo $list | xargs sudo apt-get -y install -o Dpkg::Options::=--force-confold
